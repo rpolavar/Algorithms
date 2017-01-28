@@ -1,0 +1,1 @@
+My goal is to post my solutions to the exercises and the problems given in Cormen's book (Introduction to Algorithms, 3rdEdition by THOMAS H. CORMEN, CHARLES E. LEISERSON, RONALD L. RIVEST and CLIFFORD STEIN).  This noble goal has been forsaken for the last four years!  I am very curious to see how long this project lasts this time around.
