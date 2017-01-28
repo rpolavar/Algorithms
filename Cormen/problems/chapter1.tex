@@ -1,0 +1,31 @@
+\documentclass{article}
+%\usepackage{beamerthemeBerkeley}
+% Use either the one above or the one below
+%\usetheme{Berkeley}
+\usepackage{hyperref}
+\newcommand{\tab}{\hspace*{1 cm}}
+\title{1-1 Comparison of Running Times}
+\author{TM}
+\date{\today}
+
+\begin{document}
+For each function $f(n)$ and time $t$ in the following table,
+determine the largest size $n$ of a problem that can be solved in time
+$t$, assuming that the algorithm to solve the problem takes $f(n)$
+microseconds.
+\begin{tabular}{c|c|c|c|c|c|c|c|}
+\multicolumn{1}{c|}{} & 1      & 1      & 1    & 1   & 1    & 1   & 1\\
+\multicolumn{1}{c|}{} & second & minute & hour & day & month & year
+	& century \\
+\hline $\lg n$ &  &  &  &  &  &  &  \\
+\hline $\sqrt{n}$ &  &  &  &  &  &  &  \\
+\hline $n$ &  &  &  &  &  &  &  \\
+\hline $n \lg n$ &  &  &  &  &  &  &  \\
+\hline $n^2$ &  &  &  &  &  &  &  \\
+\hline $n^3$ &  &  &  &  &  &  &  \\
+\hline $2^n$ &  &  &  &  &  &  &  \\
+\hline $n!$ &  &  &  &  &  &   &  \\
+\hline
+\end{tabular}
+a.~I decided to solve this problem programmatically.  I wrote a program called {\tt fs.py}.  I had to write an approximation function since some of the functions are not obviously invertable.  Check the program.
+\end{document}
