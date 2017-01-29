@@ -1,0 +1,89 @@
+In chapter 2, the first program that they tackle with is insertion sort.  I am thoroughly impressed with their pseudo code and hence this brief note.  I converted the pseudo code into Python effortlessly.  Then, I compared it against my code.  First of all, I took more lines to code it.  I do not consider writing a few extra lines much of a cardinal sin.  However, because of the unnecessary usage of the swap method, I ended up having three times more assignments.  Let us look at their code:
+def insertionSort (a):
+ for j in range(1, len(a)):#No biggy.
+  key=a[j]#This allowed them to reduce the number of assignments.
+  #Insert a[j] into the sorted sequence a[1. . j-1]. 
+  i=j-1
+  while i>=0 and a[i]>key:#They took care of two conditions in one shot.  
+   a[i+1]=a[i]#See no swapping is necessary.
+   i=i-1
+  a[i+1]=key
+
+Let us now look at my code:
+def insertionSort(array, compare):
+  l = len(array)#Perhaps, unnecessary optimization made me add this line.
+  for i in range(1, l):#By the way, "l" is a bad name for variables.
+    sortedUpTo = i-1
+    if compare(array[i-1], array[i]) > 0:#One of the two comparisons that they did in their while loop.
+      swap(array, i, sortedUpTo)#First ugly swap!
+      for j in range(sortedUpTo, 0, -1):#The second condition (>=0) is checked here.
+        if compare(array[j-1], array[j]) <= 0:#Did similar thing three lines ago!
+          break
+        else:
+          swap(array, j, j-1)#Ugliness continued!
+
+The code for merging  is interesting but not as impressive as the code for insertion sort.  First of all, they take too many lines to merge it.  
+
+Secondly, they use a sentinel \infty for subarrays.  In my view, it is a pain to identify a sentinel in a language like Python.  Even in Java, Integer.MAX_VALUE can be used as a sentinel but the original array should not contain Integer.MAX_VALUE.  Perhaps, we can find an element that is bigger than all the elements given in the original array.  That is what I did in the following program which is converted from their pseudo code.  Finding such a max element takes O(n) time.  Consequently, overall complexity does not increase.  There is one thing beautiful about these sentinels.  In the third loop below, you will end up comparing the sentinel of one subarray against some of the elements the other subarray eventually.  However, you will never reach the point where both the sentinels are compared with one another.  Consequently, they can get away with "<=" instead of "<".  
+
+The third thing that does not seem to be that beautiful is that they pass one single array which contains two sorted subarrays adjacent to each other.  I wonder whether it is more useful to pass separate subarrays.  Especially, it may be of some use when we get sorted subarrays from different machines or different programs.
+
+def merge(a, p, q, r):
+ max = 100
+ n1 = q-p+1
+ n2 = r-q
+ l = []
+ r = []
+ for i in range(n1):
+  l.append(a[p+i])
+ for j in range(n2):
+  r.append(a[q+j+1])
+ l.append(max)
+ r.append(max)
+ i=0
+ j=0
+ for k in range(n1+n2):
+  if l[i]<= r[j]:
+   a[p+k]=l[i]
+   i=i+1
+  else: 
+   a[p+k]=r[j]
+   j=j+1
+
+a = [1, 7, 9, 10, 2, 3, 4, 5, 6, 8]
+merge(a, 0, 3, 9)
+for i in a:
+ print i
+
+By the way, here is my program for merging:
+def merge(a, b, compare):
+  la = len(a)
+  lb = len(b)
+  c = []
+  i = 0
+  j = 0
+  while (True):
+    if compare(a[i], b[j]) > 0:
+      c.append(b[j])
+      j = j + 1
+      if j == lb:
+        c.extend(a[i:])
+        break
+    else:
+      c.append(a[i])
+      i = i + 1
+      if i == la:
+        c.extend(b[j:])
+        break
+  return c
+
+I have spent sometime thinking about partially executed sorting algorithms.  Here are some of my findings:
+In insertion sort, at any particular juncture (at the end of every iteration of outer loop), the given array up to some point is sorted.  If the value of j (loop index) equals x, the array up to x is sorted.  Moreover, the elements considered are the elements who happen to be the denizens of the original array up to x.  I wonder whether one can use this property in any real world scenario.  I think that this can be used in a cooked up scenario of parallel computing.  For example, let us assume that we have n elements in the original array.  Split it into two halves.  Then, sort the both the halves separately and merge them.  This reduces the complexity from n^2 to n^2 / 2.  Yes, still quadratic.  A few more splits reduce even further.  In the extreme case, sorting becomes n^2 / n equalling O(N).  However, merging has to take place log(n) times.  Consequently, it becomes nlog(n) algorithm!  Of course, in this cooked up scenario, we need to have n processes.  Perhaps not.  Since there is nno sorting left in the n-way split, we need no additional processes.  In some sense, at this level, there exists no difference between merge sort and insertion sort.
+
+Selection sort has a different property.  There, after j iterations, the first j elements are in sorted order and their ranks do not change in future.  Obviously, some of these j sorted elements might have migrated from the later (unsorted) part of the array.  This will be of some use if we need the first k smallest elements in order.  Yes, these are globally smallest.
+
+Heap sort has the same property as selection sort.  Obviously, complexity goes down.
+
+Quick sort gives us the first k elements based on the k'th element being pivot.  Unfortunately, it is not easy to say when the algorithm returns the first k elements for a given k.  The second problem here is that even though it returns the first k elements, those elements are not sorted.
+
+Merge sort is similar to insertion sort.  Elements are sorted locally but not globally.  Perhaps useful if the data is arranged by some identifiable criterion in the original array.  As an example, consider the incomes of people over several geographic areas.  In this case, we may be able to obtain literally locally sorted incomes.
